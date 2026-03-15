@@ -60,5 +60,36 @@ variable "database_subnet_tags" {
     default = {}
 }
 
+variable "pub_route_tags" {
+    type = map 
+    default = {}
+  
+}
+
+variable "private_route_tags" {
+    type = map 
+    default = {}
+  
+}
+
+variable "database_route_tags" {
+    type = map 
+    default = {}
+  
+}
+
+variable "nat_E_ip_tags" {
+    type =map 
+    default = {}
+  
+}
+
+
+variable "nat_tags" {
+    type = map 
+    default = {}
+  
+}
+
 
 

@@ -90,6 +90,135 @@ resource "aws_subnet" "database" {
 
 }
 
-#### 
 
+
+#### module for creating routes table for public subnet ####
+
+resource "aws_route_table" "public_rout" {
+  vpc_id = aws_vpc.main.id
+
+  # # Add a route for all internet traffic (0.0.0.0/0) directed to the Internet Gateway
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_internet_gateway.main.id
+  # }
+
+  tags = merge(
+    local.common_tags,
+    # roboshop-dev-public
+    {
+      Name = "${var.project}-${var.environment}-public"
+    },
+    var.pub_route_tags
+
+  )
+}
+
+#### module for creating routes table for private subnet ####
+
+resource "aws_route_table" "private_rout" {
+  vpc_id = aws_vpc.main.id
+
+  # # Add a route for all internet traffic (0.0.0.0/0) directed to the Internet Gateway
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_internet_gateway.main.id
+  # }
+
+  tags = merge(
+    local.common_tags,
+    # roboshop-dev-private
+    {
+      Name = "${var.project}-${var.environment}-private"
+    },
+    var.private_route_tags
+
+  )
+}
+
+#### module for creating route table for database subnet ####
+
+resource "aws_route_table" "database_rout" {
+  vpc_id = aws_vpc.main.id
+
+  # # Add a route for all internet traffic (0.0.0.0/0) directed to the Internet Gateway
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_internet_gateway.main.id
+  # }
+
+  tags = merge(
+    local.common_tags,
+    # roboshop-dev-database
+    {
+      Name = "${var.project}-${var.environment}-database"
+    },
+    var.database_route_tags
+
+  )
+}
+
+
+##### assignng route for pblic subnet #####
+
+resource "aws_route" "public" {
+  route_table_id            = aws_route_table.public_rout
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.main.id
+}
+
+
+#### cearting elatsic ip ####
+resource "aws_eip" "nat_E_ip" {
+  domain                    = "vpc"
+  tags = merge(
+    local.common_tags,
+    # roboshop-dev-database
+    {
+      Name = "${var.project}-${var.environment}-nat"
+    },
+    var.nat_E_ip_tags
+
+  )
+
+}
+
+
+### creating Nat_GW #####
+
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.nat_E_ip.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = merge(
+    local.common_tags,
+    # roboshop-dev-nat-gw
+    {
+      Name = "${var.project}-${var.environment}-nat-gw"
+    },
+    var.nat_tags
+
+  )
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.main]
+}
+
+
+##### assignng route for private subnet #####
+
+resource "aws_route" "private" {
+  route_table_id            = aws_route_table.private_rout
+  destination_cidr_block    = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.main.id
+}
+
+##### assignng route for database subnet #####
+
+resource "aws_route" "database" {
+  route_table_id            = aws_route_table.database_rout
+  destination_cidr_block    = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.main
+}
 
