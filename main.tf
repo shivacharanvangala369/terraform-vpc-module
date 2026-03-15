@@ -32,7 +32,7 @@ resource "aws_subnet" "public" {
   count = length(var.public_subnet_cider)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.public_subnet_cider[count.index]
-  availability_zone = local.az_names
+  availability_zone = local.az_names[count.index]
   map_public_ip_on_launch = true
 
     tags = merge(
@@ -89,5 +89,7 @@ resource "aws_subnet" "database" {
   )
 
 }
+
+#### 
 
 
