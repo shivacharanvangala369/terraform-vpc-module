@@ -23,4 +23,71 @@ resource "aws_internet_gateway" "main" {
   tags = local.IGW_final_tags
 }
 
+### module for creating subnets ###
+
+
+#### Public_subnet ####
+
+resource "aws_subnet" "main" {
+  count = length(var.public_subnet_cider)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.public_subnet_cider[count.index]
+  availability_zone = local.az_names
+  map_public_ip_on_launch = true
+
+    tags = merge(
+    local.common_tags,
+    # roboshop-public-useast-1
+    {
+      Name = "${var.project}-${var.environment}-public-${local.az.names[count.index]}"
+    },
+    var.pub_subnet_tags
+
+  )
+}
+
+
+#### Private_subnet ####
+
+resource "aws_subnet" "main" {
+  count = length(var.private_subnet_cider)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.private_subnet_cider[count.index]
+  availability_zone = local.az_names
+  
+
+    tags = merge(
+    local.common_tags,
+    # roboshop-private-useast-1
+    {
+      Name = "${var.project}-${var.environment}-private-${local.az.names[count.index]}"
+    },
+    var.private_subnet_tags
+
+  )
+
+}
+
+
+#### Database_subnet ####
+
+resource "aws_subnet" "main" {
+  count = length(var.database_subnet_cider)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.database_subnet_cider[count.index]
+  availability_zone = local.az_names
+  
+
+    tags = merge(
+    local.common_tags,
+    # roboshop-database-useast-1
+    {
+      Name = "${var.project}-${var.environment}-database-${local.az.names[count.index]}"
+    },
+    var.database_subnet_tags
+
+  )
+
+}
+
 
