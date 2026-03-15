@@ -18,10 +18,9 @@ variable "vpc_tags" {
     default = {}
   
 }
-
-variable "AZ_zone" {
-    default = {
-
-    }
+variable "IGW_tags" {
+    type = map
+    default = {}
   
 }
+
