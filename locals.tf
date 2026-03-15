@@ -2,7 +2,7 @@ locals {
   common_tags ={
     Project = var.project
     Environment = var.environment
-    Terraform = treu
+    Terraform = true
   }
   vpc_final_tags = merge(
     local.common_tags,
