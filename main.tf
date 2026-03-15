@@ -39,7 +39,7 @@ resource "aws_subnet" "public" {
     local.common_tags,
     # roboshop-public-us-east-1a
     {
-      Name = "${var.project}-${var.environment}-public-${local.az.names[count.index]}"
+      Name = "${var.project}-${var.environment}-public-${local.az_names[count.index]}"
     },
     var.pub_subnet_tags
 
@@ -60,7 +60,7 @@ resource "aws_subnet" "private" {
     local.common_tags,
     # roboshop-private-useast-1
     {
-      Name = "${var.project}-${var.environment}-private-${local.az.names[count.index]}"
+      Name = "${var.project}-${var.environment}-private-${local.az_names[count.index]}"
     },
     var.private_subnet_tags
 
@@ -82,7 +82,7 @@ resource "aws_subnet" "database" {
     local.common_tags,
     # roboshop-dev-database-useast-1
     {
-      Name = "${var.project}-${var.environment}-database-${local.az.names[count.index]}"
+      Name = "${var.project}-${var.environment}-database-${local.az_names[count.index]}"
     },
     var.database_subnet_tags
 

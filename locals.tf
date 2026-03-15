@@ -26,9 +26,6 @@ locals {
 #     # roboshop-public-useast-1
 #     var.pub_subnet_tags
 
-#   )
-
-  
-  
+#   ) 
 
 }
