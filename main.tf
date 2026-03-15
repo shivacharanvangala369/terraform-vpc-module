@@ -159,7 +159,7 @@ resource "aws_route_table" "database_rout" {
 }
 
 
-##### assignng route for pblic subnet #####
+##### assignng route for IGW #####
 
 resource "aws_route" "public" {
   route_table_id            = aws_route_table.public_rout
@@ -188,7 +188,7 @@ resource "aws_eip" "nat_E_ip" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat_E_ip.id
-  subnet_id     = aws_subnet.public[0].id
+  subnet_id     = aws_subnet.public[0].id  #### us-east-1a only will avabalbe for Nat
 
   tags = merge(
     local.common_tags,
@@ -206,7 +206,7 @@ resource "aws_nat_gateway" "main" {
 }
 
 
-##### assignng route for private subnet #####
+##### assignng NAT-GW for private subnet #####
 
 resource "aws_route" "private" {
   route_table_id            = aws_route_table.private_rout
@@ -214,11 +214,36 @@ resource "aws_route" "private" {
   nat_gateway_id = aws_nat_gateway.main.id
 }
 
-##### assignng route for database subnet #####
+##### assignng route to NAT-GW  for database subnet #####
 
 resource "aws_route" "database" {
   route_table_id            = aws_route_table.database_rout
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.main
 }
+
+
+
+# Associate the Route Table with the Public Subnet
+resource "aws_route_table_association" "public" {
+  count = length(var.public_subnet_cider)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public_rout.id
+}
+
+# Associate the Route Table with the Private Subnet
+resource "aws_route_table_association" "private" {
+  count = length(var.private_subnet_cider)
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private_rout.id
+}
+
+
+# Associate the Route Table with the Subnet
+resource "aws_route_table_association" "database" {
+  count = length(var.database_subnet_cider)
+  subnet_id      = aws_subnet.database[count.index].id
+  route_table_id = aws_route_table.database_rout.id
+}
+
 
