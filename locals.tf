@@ -20,7 +20,7 @@ locals {
     var.IGW_tags
 
   )
-  az_names = slice(data.aws_availability_zones.available.name, 0, 2)
+  az_names = slice(data.aws_availability_zones.available.names, 0, 2)
 #   pub-sub_final_tags = merge(
 #     local.common_tags,
 #     # roboshop-public-useast-1

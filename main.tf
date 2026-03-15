@@ -37,7 +37,7 @@ resource "aws_subnet" "public" {
 
     tags = merge(
     local.common_tags,
-    # roboshop-public-useast-1
+    # roboshop-public-us-east-1a
     {
       Name = "${var.project}-${var.environment}-public-${local.az.names[count.index]}"
     },
@@ -80,7 +80,7 @@ resource "aws_subnet" "database" {
 
     tags = merge(
     local.common_tags,
-    # roboshop-database-useast-1
+    # roboshop-dev-database-useast-1
     {
       Name = "${var.project}-${var.environment}-database-${local.az.names[count.index]}"
     },
