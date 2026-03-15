@@ -23,7 +23,7 @@ resource "aws_internet_gateway" "main" {
   tags = local.IGW_final_tags
 }
 
-### module for creating subnets ###
+### module for creating subnets #####################################################3
 
 
 #### Public_subnet ####
@@ -92,7 +92,7 @@ resource "aws_subnet" "database" {
 
 
 
-#### module for creating routes table for public subnet ####
+#### module for creating routes table for public subnet ###################################
 
 resource "aws_route_table" "public_rout" {
   vpc_id = aws_vpc.main.id
@@ -114,7 +114,7 @@ resource "aws_route_table" "public_rout" {
   )
 }
 
-#### module for creating routes table for private subnet ####
+#### module for creating routes table for private subnet ########
 
 resource "aws_route_table" "private_rout" {
   vpc_id = aws_vpc.main.id
@@ -162,7 +162,7 @@ resource "aws_route_table" "database_rout" {
 ##### assignng route for IGW #####
 
 resource "aws_route" "public" {
-  route_table_id            = aws_route_table.public_rout
+  route_table_id            = aws_route_table.public_rout.id
   destination_cidr_block    = "0.0.0.0/0"
   gateway_id = aws_internet_gateway.main.id
 }
@@ -209,7 +209,7 @@ resource "aws_nat_gateway" "main" {
 ##### assignng NAT-GW for private subnet #####
 
 resource "aws_route" "private" {
-  route_table_id            = aws_route_table.private_rout
+  route_table_id            = aws_route_table.private_rout.id
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.main.id
 }
@@ -217,9 +217,9 @@ resource "aws_route" "private" {
 ##### assignng route to NAT-GW  for database subnet #####
 
 resource "aws_route" "database" {
-  route_table_id            = aws_route_table.database_rout
+  route_table_id            = aws_route_table.database_rout.id
   destination_cidr_block    = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.main
+  nat_gateway_id = aws_nat_gateway.main.id
 }
 
 
