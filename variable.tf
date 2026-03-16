@@ -93,3 +93,10 @@ variable "nat_tags" {
 
 
 
+variable "is_peering_requried" {
+    default = false
+    type = bool
+  
+}
+
+
